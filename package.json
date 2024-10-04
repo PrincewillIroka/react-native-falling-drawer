@@ -1,5 +1,5 @@
 {
-  "name": "react-native-falling-drawer",
+  "name": "@regendy/react-native-falling-drawer",
   "version": "1.0.2",
   "description": "A customizable falling drawer for React Native",
   "main": "index.js",
