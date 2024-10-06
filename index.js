@@ -17,6 +17,7 @@ export default class FallingDrawer extends Component {
     screens: [],
     opened: false,
     selectedScreen: null,
+    activeScreenDetails: null,
   };
 
   UNSAFE_componentWillMount() {
@@ -32,6 +33,23 @@ export default class FallingDrawer extends Component {
     if (!_.isEqual(this.state.selectedScreen, prevState.selectedScreen)) {
       const latestSelectedScreen = this.state.selectedScreen;
       this.props.setSelectedScreen(latestSelectedScreen);
+    }
+
+    if (
+      _.has(this.props.activeScreenDetails, "key") &&
+      !_.isEqual(this.props.activeScreenDetails, prevProps.activeScreenDetails)
+    ) {
+      const { key: activeScreenKey, name: activeScreenName } =
+        this.props.activeScreenDetails;
+      const screens = this.state.screens.map((screen) => {
+        let { key } = screen;
+        if (key == activeScreenKey) {
+          screen["name"] = activeScreenName;
+        }
+        return screen;
+      });
+      const selectedScreen = screens[0];
+      this.setState(() => ({ screens, selectedScreen }));
     }
   }
 
@@ -194,7 +212,7 @@ export default class FallingDrawer extends Component {
         >
           <View flex>{_.map(screens, (o, i) => this.renderScreen(o, i))}</View>
           <View row vcenter style={{ ...styles.header, height: headerHeight }}>
-            <View flex>
+            <View style={{ marginRight: 15 }}>
               <TouchableOpacity style={{ marginLeft: 15 }} onPress={this.open}>
                 <MAIcon
                   name="menu"
@@ -203,25 +221,23 @@ export default class FallingDrawer extends Component {
                 />
               </TouchableOpacity>
             </View>
-            <View flex>
-              {selectedScreen.customHeader ? (
-                selectedScreen.customHeader()
-              ) : (
-                <View flex vcenter hcenter>
-                  <Text
-                    style={{
-                      color: selectedScreen.titleColor || "#FFF",
-                      marginTop: 12,
-                      fontSize: 18,
-                      marginTop: Platform.OS == "ios" ? 15 : 5,
-                    }}
-                  >
-                    {selectedScreen.name}
-                  </Text>
-                </View>
-              )}
+            <View
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "80%",
+                height: "100%",
+              }}
+            >
+              <Text
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={{ color: "#ffffff", fontSize: 18, textAlign: "center" }}
+              >
+                {selectedScreen.name}
+              </Text>
             </View>
-            <View flex />
           </View>
         </Animatable.View>
       </View>
@@ -239,6 +255,15 @@ const styles = {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    width: "100%",
+  },
+  headerTextParent: {
+    flex: 1,
+  },
+  headerTextContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    backgroundColor: "red",
   },
 };
 
@@ -251,6 +276,7 @@ FallingDrawer.propTypes = {
   diversifyAnimations: PropTypes.bool,
   setSelectedScreen: PropTypes.func,
   setIsNavDrawerOpen: PropTypes.func,
+  activeScreenDetails: PropTypes.object,
 };
 
 FallingDrawer.defaultProps = {
@@ -261,4 +287,5 @@ FallingDrawer.defaultProps = {
   diversifyAnimations: true,
   setSelectedScreen: () => {},
   setIsNavDrawerOpen: () => {},
+  activeScreenDetails: {},
 };
