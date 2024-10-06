@@ -179,6 +179,7 @@ export default class FallingDrawer extends Component {
                     marginTop: 12,
                     fontSize: 18,
                     marginTop: Platform.OS == "ios" ? 15 : 5,
+                    fontWeight: "bold"
                   }}
                 >
                   {screen.name}
@@ -226,14 +227,14 @@ export default class FallingDrawer extends Component {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                width: "80%",
+                width: "70%",
                 height: "100%",
               }}
             >
               <Text
                 numberOfLines={1}
                 ellipsizeMode="tail"
-                style={{ color: "#ffffff", fontSize: 18, textAlign: "center" }}
+                style={{ color: "#ffffff", fontSize: 18, fontWeight: "bold" }}
               >
                 {selectedScreen.name}
               </Text>
