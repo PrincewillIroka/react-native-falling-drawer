@@ -3,6 +3,7 @@ import { Dimensions, TouchableOpacity, Text, Platform } from "react-native";
 import View from "react-native-view";
 import PropTypes from "prop-types";
 import MAIcon from "react-native-vector-icons/MaterialIcons";
+import FAIcon from "react-native-vector-icons/FontAwesome";
 import _ from "lodash";
 import * as Animatable from "react-native-animatable";
 const { width, height } = Dimensions.get("window");
@@ -15,9 +16,9 @@ const HEADER_HEIGHT = Platform.select({
 export default class FallingDrawer extends Component {
   state = {
     screens: [],
-    opened: false,
     selectedScreen: null,
     activeScreenDetails: null,
+    isNotificationOpen: false,
   };
 
   UNSAFE_componentWillMount() {
@@ -26,13 +27,22 @@ export default class FallingDrawer extends Component {
       return;
     }
     this.optionViews = {};
-    this.setState(() => ({ screens, selectedScreen: screens[0] }));
+    this.setState(() => ({
+      screens,
+      selectedScreen: screens[0],
+      isNotificationOpen: false,
+    }));
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (!_.isEqual(this.state.selectedScreen, prevState.selectedScreen)) {
       const latestSelectedScreen = this.state.selectedScreen;
       this.props.setSelectedScreen(latestSelectedScreen);
+      this.setState(() => ({
+        ...this.state,
+        isNotificationOpen: false,
+      }));
+      this.props.setIsNotificationOpen(false);
     }
 
     if (
@@ -49,11 +59,23 @@ export default class FallingDrawer extends Component {
         return screen;
       });
       const selectedScreen = screens[0];
-      this.setState(() => ({ screens, selectedScreen }));
+      this.setState(() => ({
+        screens,
+        selectedScreen,
+        isNotificationOpen: false,
+      }));
+      this.props.setIsNotificationOpen(false);
+    }
+
+    if (this.props.isNotificationOpen !== prevProps.isNotificationOpen) {
+      this.setState(() => ({
+        ...this.state,
+        isNotificationOpen: this.props.isNotificationOpen,
+      }));
     }
   }
 
-  open = async () => {
+  openNavDrawer = async () => {
     const { screens } = this.state;
     const {
       optionCollapseSpeed,
@@ -85,6 +107,11 @@ export default class FallingDrawer extends Component {
         optionCollapseDelay * i
       );
     }
+    this.setState(() => ({
+      ...this.state,
+      isNotificationOpen: false,
+    }));
+    this.props.setIsNotificationOpen(false);
   };
 
   close = async () => {
@@ -147,6 +174,12 @@ export default class FallingDrawer extends Component {
     });
   };
 
+  setIsNotificationOpen = () => {
+    const isNotificationOpen = !this.state.isNotificationOpen;
+    this.setState(() => ({ ...this.state, isNotificationOpen }));
+    this.props.setIsNotificationOpen(isNotificationOpen);
+  };
+
   renderScreen = (screen) => {
     const { screens } = this.state;
     const optionHeight = height / screens.length;
@@ -179,7 +212,7 @@ export default class FallingDrawer extends Component {
                     marginTop: 12,
                     fontSize: 18,
                     marginTop: Platform.OS == "ios" ? 15 : 5,
-                    fontWeight: "bold"
+                    fontWeight: "bold",
                   }}
                 >
                   {screen.name}
@@ -194,7 +227,7 @@ export default class FallingDrawer extends Component {
 
   render() {
     const { screens, selectedScreen } = this.state;
-    const { headerHeight } = this.props;
+    const { headerHeight, hasUnreadNotifications = false } = this.props;
     if (screens.length == 0) {
       return null;
     }
@@ -213,12 +246,12 @@ export default class FallingDrawer extends Component {
         >
           <View flex>{_.map(screens, (o, i) => this.renderScreen(o, i))}</View>
           <View row vcenter style={{ ...styles.header, height: headerHeight }}>
-            <View style={{ marginRight: 15 }}>
-              <TouchableOpacity style={{ marginLeft: 15 }} onPress={this.open}>
+            <View style={{ marginRight: 15, marginLeft: 15 }}>
+              <TouchableOpacity onPress={this.openNavDrawer}>
                 <MAIcon
                   name="menu"
                   size={30}
-                  color={selectedScreen.hamburgerColor || "#FFF"}
+                  color={selectedScreen.hamburgerColor || "#ffffff"}
                 />
               </TouchableOpacity>
             </View>
@@ -238,6 +271,19 @@ export default class FallingDrawer extends Component {
               >
                 {selectedScreen.name}
               </Text>
+            </View>
+            <View style={{ marginLeft: 15 }}>
+              <TouchableOpacity onPress={this.setIsNotificationOpen}>
+                <MAIcon name="notifications-none" size={25} color={"#ffffff"} />
+              </TouchableOpacity>
+              {hasUnreadNotifications && (
+                <FAIcon
+                  name="circle"
+                  size={12}
+                  color={"#6B8E23"}
+                  style={{ position: "absolute", right: 0, top: 0 }}
+                />
+              )}
             </View>
           </View>
         </Animatable.View>
@@ -278,6 +324,9 @@ FallingDrawer.propTypes = {
   setSelectedScreen: PropTypes.func,
   setIsNavDrawerOpen: PropTypes.func,
   activeScreenDetails: PropTypes.object,
+  setIsNotificationOpen: PropTypes.func,
+  isNotificationOpen: PropTypes.bool,
+  hasUnreadNotifications: PropTypes.bool,
 };
 
 FallingDrawer.defaultProps = {
@@ -289,4 +338,7 @@ FallingDrawer.defaultProps = {
   setSelectedScreen: () => {},
   setIsNavDrawerOpen: () => {},
   activeScreenDetails: {},
+  setIsNotificationOpen: () => {},
+  isNotificationOpen: false,
+  hasUnreadNotifications: false,
 };
