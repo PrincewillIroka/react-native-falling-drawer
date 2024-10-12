@@ -51,16 +51,13 @@ export default class FallingDrawer extends Component {
     ) {
       const { key: activeScreenKey, name: activeScreenName } =
         this.props.activeScreenDetails;
-      const screens = this.state.screens.map((screen) => {
-        let { key } = screen;
-        if (key == activeScreenKey) {
-          screen["name"] = activeScreenName;
-        }
-        return screen;
-      });
-      const selectedScreen = screens[0];
+
+      let selectedScreen = this.state.selectedScreen;
+      if (selectedScreen.key === activeScreenKey) {
+        selectedScreen.name = activeScreenName;
+      }
+
       this.setState(() => ({
-        screens,
         selectedScreen,
         isNotificationOpen: false,
       }));
@@ -244,7 +241,13 @@ export default class FallingDrawer extends Component {
             top: -height,
           }}
         >
-          <View flex>{_.map(screens, (o, i) => this.renderScreen(o, i))}</View>
+          <View flex>
+            {screens
+              .sort((a, b) => {
+                return b.index - a.index;
+              })
+              .map((o, i) => this.renderScreen(o, i))}
+          </View>
           <View row vcenter style={{ ...styles.header, height: headerHeight }}>
             <View style={{ marginRight: 15, marginLeft: 15 }}>
               <TouchableOpacity onPress={this.openNavDrawer}>
