@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import { Dimensions, TouchableOpacity, Text, Platform } from "react-native";
 import View from "react-native-view";
 import PropTypes from "prop-types";
-import MAIcon from "react-native-vector-icons/MaterialIcons";
-import FAIcon from "react-native-vector-icons/FontAwesome";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import _ from "lodash";
 import * as Animatable from "react-native-animatable";
 const { width, height } = Dimensions.get("window");
@@ -177,6 +178,12 @@ export default class FallingDrawer extends Component {
     this.props.setIsNotificationOpen(isNotificationOpen);
   };
 
+  navigateToPage = (page) => {
+    const { screens = [] } = this.state;
+    const pageToNavigateTo = screens.find((sc) => sc.key === page);
+    this.setState(() => ({ selectedScreen: pageToNavigateTo }));
+  };
+
   renderScreen = (screen) => {
     const { screens } = this.state;
     const optionHeight = height / screens.length;
@@ -249,24 +256,16 @@ export default class FallingDrawer extends Component {
               .map((o, i) => this.renderScreen(o, i))}
           </View>
           <View row vcenter style={{ ...styles.header, height: headerHeight }}>
-            <View style={{ marginRight: 15, marginLeft: 15 }}>
+            <View style={{ marginRight: 12 }}>
               <TouchableOpacity onPress={this.openNavDrawer}>
-                <MAIcon
+                <MaterialIcons
                   name="menu"
                   size={30}
                   color={selectedScreen.hamburgerColor || "#ffffff"}
                 />
               </TouchableOpacity>
             </View>
-            <View
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "70%",
-                height: "100%",
-              }}
-            >
+            <View style={styles.topMiddleContainer}>
               <Text
                 numberOfLines={1}
                 ellipsizeMode="tail"
@@ -275,18 +274,36 @@ export default class FallingDrawer extends Component {
                 {selectedScreen.name}
               </Text>
             </View>
-            <View style={{ marginLeft: 15 }}>
-              <TouchableOpacity onPress={this.setIsNotificationOpen}>
-                <MAIcon name="notifications-none" size={25} color={"#ffffff"} />
-              </TouchableOpacity>
-              {hasUnreadNotifications && (
-                <FAIcon
-                  name="circle"
-                  size={12}
-                  color={"#6B8E23"}
-                  style={{ position: "absolute", right: 0, top: 0 }}
-                />
-              )}
+            <View style={styles.topRightContainer}>
+              <View style={{ marginRight: 12 }}>
+                <TouchableOpacity
+                  onPress={() => this.navigateToPage("ongoing_admissions")}
+                >
+                  <MaterialCommunityIcons
+                    name="school-outline"
+                    size={24}
+                    color={"#ffffff"}
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <View>
+                <TouchableOpacity onPress={this.setIsNotificationOpen}>
+                  <MaterialIcons
+                    name="notifications-none"
+                    size={24}
+                    color={"#ffffff"}
+                  />
+                </TouchableOpacity>
+                {hasUnreadNotifications && (
+                  <FontAwesome
+                    name="circle"
+                    size={12}
+                    color={"#32CD32"}
+                    style={{ position: "absolute", right: 0, top: 0 }}
+                  />
+                )}
+              </View>
             </View>
           </View>
         </Animatable.View>
@@ -306,6 +323,7 @@ const styles = {
     flexDirection: "row",
     alignItems: "center",
     width: "100%",
+    paddingHorizontal: 12,
   },
   headerTextParent: {
     flex: 1,
@@ -314,6 +332,20 @@ const styles = {
     flexDirection: "row",
     justifyContent: "center",
     backgroundColor: "red",
+  },
+  topMiddleContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+    width: "70%",
+  },
+  topRightContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+    marginLeft: 10,
   },
 };
 
