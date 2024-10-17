@@ -275,7 +275,7 @@ export default class FallingDrawer extends Component {
               </Text>
             </View>
             <View style={styles.topRightContainer}>
-              <View style={{ marginRight: 12 }}>
+              <View>
                 <TouchableOpacity
                   onPress={() => this.navigateToPage("ongoing_admissions")}
                 >
@@ -287,7 +287,7 @@ export default class FallingDrawer extends Component {
                 </TouchableOpacity>
               </View>
 
-              <View>
+              <View style={{ marginLeft: 12 }}>
                 <TouchableOpacity onPress={this.setIsNotificationOpen}>
                   <MaterialIcons
                     name="notifications-none"
@@ -300,7 +300,7 @@ export default class FallingDrawer extends Component {
                     name="circle"
                     size={12}
                     color={"#32CD32"}
-                    style={{ position: "absolute", right: 0, top: 0 }}
+                    style={{ position: "absolute", right: 2, top: 0 }}
                   />
                 )}
               </View>
@@ -344,8 +344,9 @@ const styles = {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    flex: 1,
-    marginLeft: 10,
+    paddingLeft: 10,
+    width: "30%",
+    height: "100%",
   },
 };
 
