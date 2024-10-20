@@ -71,6 +71,10 @@ export default class FallingDrawer extends Component {
         isNotificationOpen: this.props.isNotificationOpen,
       }));
     }
+
+    if (this.props.closeNavDrawer) {
+      this.close();
+    }
   }
 
   openNavDrawer = async () => {
@@ -363,6 +367,7 @@ FallingDrawer.propTypes = {
   setIsNotificationOpen: PropTypes.func,
   isNotificationOpen: PropTypes.bool,
   hasUnreadNotifications: PropTypes.bool,
+  closeNavDrawer: PropTypes.bool,
 };
 
 FallingDrawer.defaultProps = {
@@ -377,4 +382,5 @@ FallingDrawer.defaultProps = {
   setIsNotificationOpen: () => {},
   isNotificationOpen: false,
   hasUnreadNotifications: false,
+  closeNavDrawer: false,
 };
