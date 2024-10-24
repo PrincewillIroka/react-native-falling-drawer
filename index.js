@@ -260,7 +260,7 @@ export default class FallingDrawer extends Component {
               .map((o, i) => this.renderScreen(o, i))}
           </View>
           <View row vcenter style={{ ...styles.header, height: headerHeight }}>
-            <View style={{ marginRight: 12 }}>
+            <View style={{ marginRight: 12, flex: 0 }}>
               <TouchableOpacity onPress={this.openNavDrawer}>
                 <MaterialIcons
                   name="menu"
@@ -273,7 +273,12 @@ export default class FallingDrawer extends Component {
               <Text
                 numberOfLines={1}
                 ellipsizeMode="tail"
-                style={{ color: "#ffffff", fontSize: 18, fontWeight: "bold" }}
+                style={{
+                  color: "#ffffff",
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
               >
                 {selectedScreen.name}
               </Text>
@@ -339,17 +344,18 @@ const styles = {
   },
   topMiddleContainer: {
     display: "flex",
+    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     height: "100%",
-    width: "70%",
+    flex: 1,
   },
   topRightContainer: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    paddingLeft: 10,
-    width: "30%",
+    marginLeft: 10,
+    flex: 0,
     height: "100%",
   },
 };
