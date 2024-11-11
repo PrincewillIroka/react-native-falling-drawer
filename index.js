@@ -145,11 +145,11 @@ export default class FallingDrawer extends Component {
       },
       optionCollapseSpeed
     );
-    if (diversifyAnimations) {
-      this.diversifyAnimations(key, i);
-    } else {
-      this.shake(key, i);
-    }
+    // if (diversifyAnimations) {
+    //   this.diversifyAnimations(key, i);
+    // } else {
+    //   this.shake(key, i);
+    // }
   };
 
   diversifyAnimations = (key, i) => {
@@ -201,7 +201,7 @@ export default class FallingDrawer extends Component {
           left: -width / 4,
           height: height,
           width: width + width / 2,
-          backgroundColor: screen.color,
+          backgroundColor: screen.headerColor,
         }}
       >
         <TouchableOpacity
@@ -245,7 +245,7 @@ export default class FallingDrawer extends Component {
         <Animatable.View
           ref={(view) => (this.optionViews["drawer"] = view)}
           style={{
-            backgroundColor: selectedScreen.color,
+            backgroundColor: selectedScreen.backgroundColor,
             position: "absolute",
             height: height + headerHeight,
             width,
@@ -309,7 +309,7 @@ export default class FallingDrawer extends Component {
                     name="circle"
                     size={12}
                     color={"#32CD32"}
-                    style={{ position: "absolute", right: 2, top: 0 }}
+                    style={{ position: "absolute", right: 5, top: 0 }}
                   />
                 )}
               </View>
